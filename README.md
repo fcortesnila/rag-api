@@ -2,27 +2,44 @@
 
 This project is a small, self-contained Retrieval-Augmented Generation API: it indexes text in a local ChromaDB collection and answers questions with relevant retrieved passages, making each response inspectable and grounded in source chunks.
 
-## Setup
+## Run locally
 
-1. Clone the repository and enter the project directory.
-2. Create a `.env` file from `.env.example` and add your OpenAI API key.
-3. Install dependencies with `pip install -r requirements.txt`.
-4. Start the API with `uvicorn app.main:app --reload`.
+1. Create and activate a virtual environment, then install dependencies:
 
-The app starts even if `OPENAI_API_KEY` is absent. In that case, `/ingest` and `/query` return a clear `503` error when called.
+   ```powershell
+   py -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   python -m pip install -r requirements.txt
+   ```
+
+2. Copy `.env.example` to `.env` and add your OpenAI API key:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+3. Start the development server:
+
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
 ## Run with Docker
 
-1. Copy `.env.example` to `.env` and add your OpenAI API key (in PowerShell, run `Copy-Item .env.example .env`, then edit `.env`). The key is optional for starting the API, but required for `/ingest` and `/query`.
+1. Copy `.env.example` to `.env` and add your OpenAI API key (the same file can be used for either run method).
 2. Build and start the service:
 
    ```bash
    docker compose up --build
    ```
 
-3. Open [http://localhost:8000/docs](http://localhost:8000/docs) to use the API.
+For either run method, open [http://localhost:8000/docs](http://localhost:8000/docs) to use the API. The app can start without an API key, but `/ingest` and `/query` require `OPENAI_API_KEY` and return `503` if it is missing.
 
 The Compose setup keeps ChromaDB data in the `chroma_data` named volume. Stop the service with `docker compose down`; the data remains available on the next start. To remove the stored data as well, run `docker compose down --volumes`.
+
+## Local files and Git
+
+The `.gitignore` rules keep local secrets (`.env`), Python virtual environments and caches, test/tool caches, and the local `chroma_db/` data directory out of Git. The example configuration `.env.example` is intentionally tracked; never put a real API key in it.
 
 ## Example requests
 
