@@ -11,6 +11,19 @@ This project is a small, self-contained Retrieval-Augmented Generation API: it i
 
 The app starts even if `OPENAI_API_KEY` is absent. In that case, `/ingest` and `/query` return a clear `503` error when called.
 
+## Run with Docker
+
+1. Copy `.env.example` to `.env` and add your OpenAI API key (in PowerShell, run `Copy-Item .env.example .env`, then edit `.env`). The key is optional for starting the API, but required for `/ingest` and `/query`.
+2. Build and start the service:
+
+   ```bash
+   docker compose up --build
+   ```
+
+3. Open [http://localhost:8000/docs](http://localhost:8000/docs) to use the API.
+
+The Compose setup keeps ChromaDB data in the `chroma_data` named volume. Stop the service with `docker compose down`; the data remains available on the next start. To remove the stored data as well, run `docker compose down --volumes`.
+
 ## Example requests
 
 Index two documents:
